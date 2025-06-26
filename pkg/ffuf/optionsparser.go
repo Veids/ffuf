@@ -52,6 +52,7 @@ type GeneralOptions struct {
 	AutoCalibrationPerHost    bool     `json:"autocalibration_per_host"`
 	AutoCalibrationStrategies []string `json:"autocalibration_strategies"`
 	AutoCalibrationStrings    []string `json:"autocalibration_strings"`
+	PerDomainTimeoutThreshold uint64   `json:"per_domain_timeout_threshold"`
 	Colors                    bool     `json:"colors"`
 	ConfigFile                string   `toml:"-" json:"config_file"`
 	Delay                     string   `json:"delay"`

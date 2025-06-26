@@ -88,6 +88,7 @@ func ParseFlags(opts *ffuf.ConfigOptions) *ffuf.ConfigOptions {
 	flag.IntVar(&opts.General.MaxTimeJob, "maxtime-job", opts.General.MaxTimeJob, "Maximum running time in seconds per job.")
 	flag.IntVar(&opts.General.Rate, "rate", opts.General.Rate, "Rate of requests per second")
 	flag.IntVar(&opts.General.Threads, "t", opts.General.Threads, "Number of concurrent threads.")
+	flag.Uint64Var(&opts.General.PerDomainTimeoutThreshold, "domain-timeout-threshold", opts.General.PerDomainTimeoutThreshold, "Max timeouts for a host before skipping from scan")
 	flag.IntVar(&opts.HTTP.RecursionDepth, "recursion-depth", opts.HTTP.RecursionDepth, "Maximum recursion depth.")
 	flag.IntVar(&opts.HTTP.Timeout, "timeout", opts.HTTP.Timeout, "HTTP request timeout in seconds.")
 	flag.IntVar(&opts.Input.InputNum, "input-num", opts.Input.InputNum, "Number of inputs to test. Used in conjunction with --input-cmd.")
@@ -318,6 +319,7 @@ func prepareJob(conf *ffuf.Config) (*ffuf.Job, error) {
 func SetupFilters(parseOpts *ffuf.ConfigOptions, conf *ffuf.Config) error {
 	errs := ffuf.NewMultierror()
 	conf.MatcherManager = filter.NewMatcherManager()
+	conf.PerDomainTimeout = filter.NewPerDomainTimeout(parseOpts.General.PerDomainTimeoutThreshold)
 	// If any other matcher is set, ignore -mc default value
 	matcherSet := false
 	statusSet := false

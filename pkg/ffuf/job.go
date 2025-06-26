@@ -406,6 +406,12 @@ func (j *Job) runTask(input map[string][]byte, position int, retried bool) {
 		return
 	}
 
+	if j.Config.PerDomainTimeout.IsEnabled() {
+		if j.Config.PerDomainTimeout.IsTimedOut(basereq.Url) {
+			return
+		}
+	}
+
 	resp, err := j.Runner.Execute(&req)
 	if err != nil {
 		req.Error = err.Error()
@@ -427,6 +433,10 @@ func (j *Job) runTask(input map[string][]byte, position int, retried bool) {
 			j.runTask(input, position, true)
 		}
 		if os.IsTimeout(err) {
+			if j.Config.PerDomainTimeout.IsEnabled() {
+				j.Config.PerDomainTimeout.IncreaseTimeoutCount(basereq.Url)
+			}
+
 			for name := range j.Config.MatcherManager.GetMatchers() {
 				if name == "time" {
 					inputmsg := ""
@@ -449,6 +459,10 @@ func (j *Job) runTask(input map[string][]byte, position int, retried bool) {
 			}
 		}
 		return
+	} else {
+		if j.Config.PerDomainTimeout.IsEnabled() {
+			j.Config.PerDomainTimeout.ResetTimeoutCount(basereq.Url)
+		}
 	}
 
 	// audit the response after the error handling

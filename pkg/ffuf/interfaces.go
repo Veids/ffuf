@@ -19,6 +19,13 @@ type MatcherManager interface {
 	Calibrated() bool
 }
 
+type PerDomainTimeout interface {
+	IncreaseTimeoutCount(host string)
+	ResetTimeoutCount(host string)
+	IsTimedOut(host string) bool
+	IsEnabled() bool
+}
+
 // FilterProvider is a generic interface for both Matchers and Filters
 type FilterProvider interface {
 	Filter(response *Response) (bool, error)

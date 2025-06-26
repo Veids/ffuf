@@ -34,6 +34,9 @@ type Config struct {
 	InputShell                string                `json:"inputshell"`
 	Json                      bool                  `json:"json"`
 	MatcherManager            MatcherManager        `json:"matchers"`
+	PerDomainTimeout          PerDomainTimeout      `json:"domain_timeout"`
+	PerDomainTimeoutEnabled   bool                  `json:"per_domain_timeout"`
+	PerDomainTimeoutThreshold int                   `json:"per_domain_timeout_threshold"`
 	MatcherMode               string                `json:"mmode"`
 	MaxTime                   int                   `json:"maxtime"`
 	MaxTimeJob                int                   `json:"maxtime_job"`
@@ -109,6 +112,7 @@ func NewConfig(ctx context.Context, cancel context.CancelFunc) Config {
 	conf.Noninteractive = false
 	conf.ProgressFrequency = 125
 	conf.ProxyURL = ""
+	conf.PerDomainTimeoutThreshold = 0
 	conf.Quiet = false
 	conf.Rate = 0
 	conf.Raw = false
